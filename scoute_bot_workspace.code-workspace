@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "scout_bot_controller"
+		},
+		{
+			"name": "scout_bot_receiver",
+			"path": "scout_bot_receiver"
+		}
+	],
+	"settings": {}
+}
