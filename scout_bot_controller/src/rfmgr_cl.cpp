@@ -53,6 +53,53 @@ bool RFManager_Client::paired() {
     return m_client->isConnected();
 }
 
+BLERemoteService *RFManager_Client::pair_service(BLEUUID service_uuid) {
+#ifdef CLIENT_DBG
+    g_log_mgr.println("dbg: returning peer service: " + service_uuid.toString());
+#endif
+    return m_client->getService(service_uuid);
+}
+       
+BLERemoteCharacteristic *RFManager_Client::pair_characteristic(BLERemoteService *service, BLEUUID characteristic_uuid) {
+#ifdef CLIENT_DBG
+    g_log_mgr.println("dbg: from service: " + service->toString() + " returning peer characteristic: " + characteristic_uuid.toString());
+#endif
+    return service->getCharacteristic(characteristic_uuid);
+}
+
+RFManager_Client::peer_char_attributes_t RFManager_Client::pair_char_attributes(BLERemoteCharacteristic *characteristic) {
+    /**
+         * @brief layout of peer_char_attributes_t
+         * bit 0: broadcast?
+         * bit 1: indicate?
+         * bit 2: notify?
+         * bit 3: read?
+         * bit 4: write?
+         * bit 5: write no response?
+     */
+    peer_char_attributes_t attr = 0;
+
+    if (characteristic->canBroadcast())
+        attr |= 1 << 0;
+
+    if (characteristic->canIndicate())
+        attr |= 1 << 1;
+
+    if (characteristic->canNotify())
+        attr |= 1 << 2;
+
+    if (characteristic->canRead())
+        attr |= 1 << 3;
+
+    if (characteristic->canWrite())
+        attr |= 1 << 4;
+
+    if (characteristic->canWriteNoResponse())
+        attr |= 1 << 5;
+
+    return attr;
+}
+
 void RFManager_Adv_Callbacks::onResult(BLEAdvertisedDevice adv_device) {
 /* #ifdef CLIENT_DBG
     g_log_mgr.println("dbg: found advertising device " + adv_device.toString());

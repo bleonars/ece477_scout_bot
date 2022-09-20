@@ -90,6 +90,32 @@ namespace ScoutBot_Client {
          */
         bool paired();
 
+        /**
+         * @brief retrieve peer service by uuid
+         * 
+         * @param service_uuid uuid of service
+         * @return BLERemoteService* pointer to remote service object
+         */
+        BLERemoteService *pair_service(BLEUUID service_uuid);
+
+        /**
+         * @brief retrieve peer service characteristic by uuid
+         * 
+         * @param service remote service pointer
+         * @param service_uuid uuid of service
+         * @return BLERemoteCharacteristic* pointer to remote characteristic object
+         */
+        BLERemoteCharacteristic *pair_characteristic(BLERemoteService *service, BLEUUID characteristic_uuid);
+
+        /**
+         * @brief retrive attributes of peer characteristic (look definition for type bit layout)
+         * 
+         * @param characteristic pointer to remote characteristic object
+         * @return remote_char_attributes_t 
+         */
+        using peer_char_attributes_t = uint8_t;
+        peer_char_attributes_t pair_char_attributes(BLERemoteCharacteristic *characteristic);
+
     private:
         BLEClient                  *m_client;              /* client obj */
         BLEScan                    *m_adv_scan_obj;        /* advertising scan obj */
