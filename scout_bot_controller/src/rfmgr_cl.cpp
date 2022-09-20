@@ -21,8 +21,8 @@ void RFManager_Client::adv_scan_start(BLEUUID srv_uuid, bool active_scan, uint16
     m_adv_scan_obj->setWindow(scan_window);
 
 #ifdef CLIENT_DBG
-    Serial.print("dbg: starting scan for uuid ");
-    Serial.println(m_srv_uuid.toString().c_str());
+    g_log_mgr.print("dbg: starting scan for uuid ");
+    g_log_mgr.println(m_srv_uuid.toString());
 #endif
 
     m_adv_scan_obj->start(scan_duration, false);
@@ -32,6 +32,6 @@ void RFManager_Client::adv_scan_stop() {
     m_adv_scan_obj->stop();
 
 #ifdef CLIENT_DBG
-    Serial.println("dbg: scan ended");
+    g_log_mgr.println("dbg: scan ended");
 #endif
 }

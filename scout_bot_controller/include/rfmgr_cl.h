@@ -1,9 +1,8 @@
 #ifndef __RF_MANAGER_CL_H__
 #define __RF_MANAGER_CL_H__
 
-#include "BLEDevice.h"
-#include "Arduino.h"
 #include "main.h"
+#include "BLEDevice.h"
 
 #include <memory>
 
@@ -43,12 +42,12 @@ namespace ScoutBot_Controller {
         void connect();
 
     protected:
-        BLEUUID                                   m_srv_uuid;         // remote server uuid
-        BLEAdvertisedDevice                       m_conn_device;      // connected device advertising obj
+        BLEUUID                                   m_srv_uuid;         /* remote server uuid */
+        BLEAdvertisedDevice                       m_conn_device;      /* connected device advertising obj */
 
     private:
-        BLEScan                                  *m_adv_scan_obj;     // advertising scan obj
-        std::unique_ptr<RFManager_Adv_Callbacks>  m_adv_callback_obj; // advertising callback obj
+        BLEScan                                  *m_adv_scan_obj;     /* advertising scan obj */
+        std::unique_ptr<RFManager_Adv_Callbacks>  m_adv_callback_obj; /* advertising callback obj */
     };
 
     /**
@@ -77,7 +76,8 @@ namespace ScoutBot_Controller {
             }
         }
     };
-
 }
+
+extern ScoutBot_Controller::RFManager_Client g_rfmgr_cl;
 
 #endif
