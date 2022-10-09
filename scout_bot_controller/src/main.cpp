@@ -9,7 +9,7 @@ void setup() {
 
     g_rfmgr_cl.setup("scout bot controller v1.0");
     while (!g_rfmgr_cl.found()) {
-        g_rfmgr_cl.adv_scan_start(BLEUUID("4fafc201-1fb5-459e-8fcc-c5c9c331914b"), true, 1349, 449, 5);
+        g_rfmgr_cl.adv_scan_start(BLEUUID(SERVICE_UUID), true, 1349, 449, 5);
         g_log_mgr.print("\n\n");
     }
 

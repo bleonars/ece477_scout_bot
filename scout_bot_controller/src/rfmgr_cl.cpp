@@ -68,30 +68,31 @@ BLERemoteCharacteristic *RFManager_Client::pair_characteristic(BLERemoteService 
 }
 
 RFManager_Client::peer_char_attributes_t RFManager_Client::pair_char_attributes(BLERemoteCharacteristic *characteristic) {
-    /**
-         * @brief layout of peer_char_attributes_t
-         * bit 0: broadcast?
-         * bit 1: indicate?
-         * bit 2: notify?
-         * bit 3: read?
-         * bit 4: write?
-         * bit 5: write no response?
-     */
     peer_char_attributes_t attr = 0;
 
-    if (characteristic->canBroadcast())
+    /**
+     * @brief layout of peer_char_attributes_t
+     * bit 0: read?
+     * bit 1: write?
+     * bit 2: notify?
+     * bit 3: broadcast?
+     * bit 4: indicate?
+     * bit 5: write no response?
+     */
+
+    if (characteristic->canRead())
         attr |= 1 << 0;
 
-    if (characteristic->canIndicate())
+    if (characteristic->canWrite())
         attr |= 1 << 1;
 
     if (characteristic->canNotify())
         attr |= 1 << 2;
 
-    if (characteristic->canRead())
+    if (characteristic->canBroadcast())
         attr |= 1 << 3;
 
-    if (characteristic->canWrite())
+    if (characteristic->canIndicate())
         attr |= 1 << 4;
 
     if (characteristic->canWriteNoResponse())
