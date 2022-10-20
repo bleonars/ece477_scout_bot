@@ -1,4 +1,5 @@
 #include "rfmgr_cl.h"
+#include <main.h>
 
 Utils::LogManager g_log_mgr;
 ScoutBot_Client::RFManager_Client g_rfmgr_cl;

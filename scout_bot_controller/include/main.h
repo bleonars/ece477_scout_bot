@@ -10,6 +10,7 @@
 #include "freertos/semphr.h"
 
 /* esp32 */
+#include <ESP32Servo.h>
 
 /* arduino */
 #include "Arduino.h"
