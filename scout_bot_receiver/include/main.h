@@ -22,5 +22,6 @@
 
 /* internal */
 #include "logmgr.h"
+#include "chassiscontrol.h"
 
 #endif
