@@ -13,8 +13,12 @@ void setup() {
     auto service = g_rfmgr_srv.add_service(BLEUUID(SERVICE_UUID));
     auto characteristic = service->add_characteristic(BLEUUID(CHARACTERISTIC_UUID), BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
     
+    // TODO: Add characteristics found in main.h, migrate the uuid definitions from main.h to config.h
+
     static uint32_t val = 123;
     characteristic->setValue(val);
+
+    // TODO: Initialize the values for characteristics
 
     g_rfmgr_srv.adv_start();
     
@@ -25,6 +29,8 @@ void loop() {
     auto service = g_rfmgr_srv.get_service(BLEUUID(SERVICE_UUID));
     auto characteristic = service->get_characteristic(BLEUUID(CHARACTERISTIC_UUID));
     
+    // TODO: Process the characteristic IDs, potentially also add redundant protection for motors if BLE is not connected.
+
     g_log_mgr.println("dbg: characteristic value: " + std::to_string(Utils::payload_to_u32(characteristic->getData())));
 
     delay(5000);
