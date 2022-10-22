@@ -8,24 +8,12 @@ void setup() {
     g_log_mgr.allocate(UART_NUM_0, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, 1024, 0, 115200);
     g_log_mgr.println("scout bot receiver v1.0");
     
-    g_rfmgr_srv.setup("scout bot receiver v1.0");
-
-    auto service = g_rfmgr_srv.add_service(BLEUUID(SERVICE_UUID));
-    auto characteristic = service->add_characteristic(BLEUUID(CHARACTERISTIC_UUID), BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-    
-    static uint32_t val = 123;
-    characteristic->setValue(val);
-
-    g_rfmgr_srv.adv_start();
-    
-    delay(100);
+    pinMode(2, OUTPUT);
 }
 
 void loop() {
-    auto service = g_rfmgr_srv.get_service(BLEUUID(SERVICE_UUID));
-    auto characteristic = service->get_characteristic(BLEUUID(CHARACTERISTIC_UUID));
-    
-    g_log_mgr.println("dbg: characteristic value: " + std::to_string(Utils::payload_to_u32(characteristic->getData())));
-
-    delay(5000);
+    digitalWrite(2, HIGH);
+    delay(1000);
+    digitalWrite(2, LOW);
+    delay(1000);
 }
