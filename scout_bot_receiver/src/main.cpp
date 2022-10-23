@@ -9,11 +9,14 @@ void setup() {
     g_log_mgr.println("scout bot receiver v1.0");
     
     pinMode(2, OUTPUT);
+    pinMode(15, OUTPUT);
 }
 
 void loop() {
     digitalWrite(2, HIGH);
+    digitalWrite(15, LOW);
     delay(1000);
     digitalWrite(2, LOW);
+    digitalWrite(15, HIGH);
     delay(1000);
 }
