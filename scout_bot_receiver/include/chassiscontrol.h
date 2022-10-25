@@ -22,10 +22,10 @@ typedef enum btn_select_e {
     BTN_INVALID = INT_MAX
 } btn_select_e_t;
 
-class chassisControl {
+class ChassisControl {
     public:
-        std::uint32_t set_left_motors(uint32_t voltage);
-        std::uint32_t set_right_motors(uint32_t voltage);
+        std::uint32_t set_left_motors(std::uint32_t voltage);
+        std::uint32_t set_right_motors(std::uint32_t voltage);
 
         std::uint32_t get_jstick(jstick_select_e_t jstick);
         std::uint32_t get_range();

@@ -4,7 +4,7 @@
 Utils::LogManager g_log_mgr;
 ScoutBot_Server::RFManager_Server g_rfmgr_srv;
 
-chassisControl chassis();
+ChassisControl chassis();
 
 void setup() {
     g_log_mgr.allocate(UART_NUM_0, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, 1024, 0, 115200);
