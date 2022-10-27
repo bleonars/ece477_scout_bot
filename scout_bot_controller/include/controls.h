@@ -11,11 +11,27 @@
 #define JOYSTICK_R_HORZ 33
 #define JOYSTICK_R_SEL 19
 
+/* PCB S3 */
+#define BUTTON_1_SEL 5
+
+/* PCB S5 */
+#define BUTTON_2_SEL 22
+
+/* PCB S6 */
+#define BUTTON_3_SEL 23
+
+/* PCB S7 */
+#define BUTTON_4_SEL 21
+
 #define JOYSTICK_MAX_V_ADC 4095
 
 typedef struct joystick_config {
     uint8_t m_joystick_gpio[3];
 } joystick_config_t;
+
+typedef struct button_config {
+    uint8_t m_button_gpio;
+} button_config_t;
 
 /**
  * @brief setup a joystick based on input pins
@@ -50,3 +66,23 @@ float joystick_read_vert(joystick_config_t *jconfig);
  * @return float 0 - 1 value, 0.44-0.47 for no input, 1.0 for fully left, 0.0 for fully right
  */
 float joystick_read_horz(joystick_config_t *jconfig);
+
+
+/**
+* @brief setup the four controller buttons based on input 
+* 
+* @param bconfig button config
+* @param pin_1 button 1 pin
+* @param pin_2 button 2 pin
+* @param pin_3 button 3 pin
+* @param pin_4 button 4 pin
+*/
+void button_setup(button_config_t *bconfig, uint8_t pin_1, uint8_t pin_2, uint8_t pin3, uint8_t pin4);
+
+/**
+ * @brief read button
+ * 
+ * @param bconfig button config
+ * @return uint8_t if not pressed, 1 if pressed
+*/
+uint8_t button_read_sel(button_config_t *bconfig);
