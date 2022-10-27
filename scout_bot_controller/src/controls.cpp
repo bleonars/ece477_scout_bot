@@ -19,3 +19,9 @@ float joystick_read_vert(joystick_config_t *jconfig) {
 float joystick_read_horz(joystick_config_t *jconfig) {
     return ((float) analogRead(jconfig->m_joystick_gpio[1]) / JOYSTICK_MAX_V_ADC);
 }
+
+uint8_t button_read_sel(button_config_t *bconfig){
+    return digitalRead(bconfig->m_button_gpio) != HIGH;
+}
+
+void
