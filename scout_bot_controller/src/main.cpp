@@ -26,7 +26,7 @@ void setup() {
 }
 
 void loop() {
-    g_log_mgr.println("right horz: " + std::to_string(joystick_read_horz(&right_joystick)));
+    g_log_mgr.println("\nright horz: " + std::to_string(joystick_read_horz(&right_joystick)));
     g_log_mgr.println("right vert: " + std::to_string(joystick_read_vert(&right_joystick)));
     g_log_mgr.println("right sel: " + std::to_string(joystick_read_sel(&right_joystick)));
 
@@ -34,10 +34,10 @@ void loop() {
     g_log_mgr.println("left vert: " + std::to_string(joystick_read_vert(&left_joystick)));
     g_log_mgr.println("left sel: " + std::to_string(joystick_read_sel(&left_joystick)));
 
-    g_log_mgr.println("\nButton1 Value: " + std::to_string(button_read_sel(&buttons, 0)));
-    g_log_mgr.println("\nButton2 Value: " + std::to_string(button_read_sel(&buttons, 1)));
-    g_log_mgr.println("\nButton3 Value: " + std::to_string(button_read_sel(&buttons, 2)));
-    g_log_mgr.println("\nButton4 Value: " + std::to_string(button_read_sel(&buttons, 3)));
+    g_log_mgr.println("\nbutton 1 sel: " + std::to_string(button_read_sel(&buttons, 0)));
+    g_log_mgr.println("button 2 sel: " + std::to_string(button_read_sel(&buttons, 1)));
+    g_log_mgr.println("button 3 sel: " + std::to_string(button_read_sel(&buttons, 2)));
+    g_log_mgr.println("button 4 sel: " + std::to_string(button_read_sel(&buttons, 3)));
     // Arcade and Tank goes here later
     
     delay(2000);
