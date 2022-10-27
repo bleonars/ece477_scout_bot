@@ -11,6 +11,8 @@
 #define JOYSTICK_R_HORZ 33
 #define JOYSTICK_R_SEL 19
 
+#define JOYSTICK_MAX_V_ADC 4095
+
 /* PCB S3 */
 #define BUTTON_1_SEL 5
 
@@ -23,14 +25,12 @@
 /* PCB S7 */
 #define BUTTON_4_SEL 21
 
-#define JOYSTICK_MAX_V_ADC 4095
-
 typedef struct joystick_config {
     uint8_t m_joystick_gpio[3];
 } joystick_config_t;
 
 typedef struct button_config {
-    uint8_t m_button_gpio;
+    uint8_t m_button_gpio[4];
 } button_config_t;
 
 /**
@@ -77,12 +77,13 @@ float joystick_read_horz(joystick_config_t *jconfig);
 * @param pin_3 button 3 pin
 * @param pin_4 button 4 pin
 */
-void button_setup(button_config_t *bconfig, uint8_t pin_1, uint8_t pin_2, uint8_t pin3, uint8_t pin4);
+void button_setup(button_config_t *bconfig, uint8_t pin_1, uint8_t pin_2, uint8_t pin_3, uint8_t pin_4);
 
 /**
- * @brief read button
+ * @brief read button by idx
  * 
  * @param bconfig button config
+ * @param button_idx index of button to read
  * @return uint8_t if not pressed, 1 if pressed
 */
-uint8_t button_read_sel(button_config_t *bconfig);
+uint8_t button_read_sel(button_config_t *bconfig, size_t button_idx);
