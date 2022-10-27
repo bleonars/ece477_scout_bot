@@ -1,7 +1,6 @@
 #include "bdc_motor.h"
 
 void bdc_motor_setup(bdc_motor_config_t *bdc_config) {
-    // https://docs.espressif.com/projects/esp-idf/en/v4.4.2/esp32/api-reference/peripherals/mcpwm.html#configure
     mcpwm_config_t     pwm_config;
     mcpwm_pin_config_t pin_config;
     
@@ -9,6 +8,7 @@ void bdc_motor_setup(bdc_motor_config_t *bdc_config) {
         pin_config.mcpwm0a_out_num = bdc_config->m_mcpwm_out_gpios[0];
         pin_config.mcpwm0b_out_num = bdc_config->m_mcpwm_out_gpios[1];
     }
+    
     else if (bdc_config->m_mcpwm_unit == MCPWM_UNIT_1) {
         pin_config.mcpwm1a_out_num = bdc_config->m_mcpwm_out_gpios[0];
         pin_config.mcpwm1b_out_num = bdc_config->m_mcpwm_out_gpios[1];
@@ -30,7 +30,6 @@ void bdc_motor_drive(bdc_motor_config_t *bdc_config) {
 }
 
 void bdc_motor_stop(bdc_motor_config_t *bdc_config) {
-    // https://docs.espressif.com/projects/esp-idf/en/v4.4.2/esp32/api-reference/peripherals/mcpwm.html#operate
     mcpwm_stop(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer);
 }
 
