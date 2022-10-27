@@ -19,13 +19,11 @@ void setup() {
     //while (!g_rfmgr_cl.paired())
         //g_rfmgr_cl.pair();
     
-    //joystick_setup(&right_joystick, JOYSTICK_R_VERT, JOYSTICK_R_HORZ, JOYSTICK_R_SEL);
-    //joystick_setup(&left_joystick, JOYSTICK_L_VERT, JOYSTICK_L_HORZ, JOYSTICK_L_SEL);
-    g_log_mgr.println("testing\n");
+    joystick_setup(&right_joystick, JOYSTICK_R_VERT, JOYSTICK_R_HORZ, JOYSTICK_R_SEL);
+    joystick_setup(&left_joystick, JOYSTICK_L_VERT, JOYSTICK_L_HORZ, JOYSTICK_L_SEL);
 }
 
 void loop() {
-    /*
     g_log_mgr.println("right horz: " + std::to_string(joystick_read_horz(&right_joystick)));
     g_log_mgr.println("right vert: " + std::to_string(joystick_read_vert(&right_joystick)));
     g_log_mgr.println("right sel: " + std::to_string(joystick_read_sel(&right_joystick)));
@@ -34,6 +32,5 @@ void loop() {
     g_log_mgr.println("left vert: " + std::to_string(joystick_read_vert(&left_joystick)));
     g_log_mgr.println("left sel: " + std::to_string(joystick_read_sel(&left_joystick)));
 
-    delay(400);
-    */
+    delay(2000);
 }
