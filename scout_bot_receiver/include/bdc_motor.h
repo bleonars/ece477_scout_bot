@@ -11,9 +11,11 @@ static mcpwm_dev_t *mcpwm0_reg = &MCPWM0; /* MCPWM0 Unit Register */
 static mcpwm_dev_t *mcpwm1_reg = &MCPWM1; /* MCPWM0 Unit Register */
 
 typedef struct bdc_motor_config {
-    mcpwm_unit_t  m_mcpwm_unit;         /* MCPWM Unit  */
-    mcpwm_timer_t m_mcpwm_timer;        /* MCPWM Timer */
-    uint8_t       m_mcpwm_out_gpios[2]; /* PWM GPIO Output A & B */
+    mcpwm_unit_t       m_mcpwm_unit;         /* MCPWM Unit  */
+    mcpwm_timer_t      m_mcpwm_timer;        /* MCPWM Timer */
+    uint8_t            m_mcpwm_out_gpios[2]; /* PWM GPIO Output A & B */
+    mcpwm_config_t     m_pwm_config;         /* PWM Config */
+    mcpwm_pin_config_t m_pin_config;         /* GPIO Output Config */
 } bdc_motor_config_t;
 
 /**
