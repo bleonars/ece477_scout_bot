@@ -2,10 +2,7 @@
 #include "Arduino.h"
 #include "bdc_motor.h"
 
-std::uint32_t ChassisControl::set_left_motors(std::uint32_t voltage) {
-    bdc_motor_config_t motor_1_cfg; // left front
-    bdc_motor_config_t motor_2_cfg; // left back
-
+void ChassisControl::init_chassis() {
     motor_1_cfg.m_mcpwm_out_gpios[0] = 15; 
     motor_1_cfg.m_mcpwm_out_gpios[1] = 18; 
     motor_1_cfg.m_mcpwm_unit         = MCPWM_UNIT_0;
@@ -15,20 +12,6 @@ std::uint32_t ChassisControl::set_left_motors(std::uint32_t voltage) {
     motor_2_cfg.m_mcpwm_out_gpios[1] = 21; 
     motor_2_cfg.m_mcpwm_unit         = MCPWM_UNIT_0;
     motor_2_cfg.m_mcpwm_timer        = MCPWM_TIMER_0;
-
-    bdc_motor_setup(&motor_1_cfg);
-    bdc_motor_setup(&motor_2_cfg);
-
-    bdc_motor_drive(&motor_1_cfg);
-    bdc_motor_drive(&motor_2_cfg);
-
-    return INT_MAX;
-}
-
-std::uint32_t ChassisControl::set_right_motors(std::uint32_t voltage) {
-
-    bdc_motor_config_t motor_3_cfg; // right front
-    bdc_motor_config_t motor_4_cfg; // right back
 
     motor_3_cfg.m_mcpwm_out_gpios[0] = 22; 
     motor_3_cfg.m_mcpwm_out_gpios[1] = 23; 
@@ -40,13 +23,34 @@ std::uint32_t ChassisControl::set_right_motors(std::uint32_t voltage) {
     motor_4_cfg.m_mcpwm_unit         = MCPWM_UNIT_1;
     motor_4_cfg.m_mcpwm_timer        = MCPWM_TIMER_1;
 
+    bdc_motor_setup(&motor_1_cfg);
+    bdc_motor_setup(&motor_2_cfg);
     bdc_motor_setup(&motor_3_cfg);
     bdc_motor_setup(&motor_4_cfg);
+}
 
+void ChassisControl::start_motors() {
+    bdc_motor_drive(&motor_1_cfg);
+    bdc_motor_drive(&motor_2_cfg);
     bdc_motor_drive(&motor_3_cfg);
     bdc_motor_drive(&motor_4_cfg);
-    
-    return INT_MAX;
+}
+
+void ChassisControl::stop_motors() {
+    bdc_motor_stop(&motor_1_cfg);
+    bdc_motor_stop(&motor_2_cfg);
+    bdc_motor_stop(&motor_3_cfg);
+    bdc_motor_stop(&motor_4_cfg);
+}
+
+void ChassisControl::set_left_motors(float duty_cycle) {
+    bdc_motor_set_speed(&motor_1_cfg, duty_cycle);
+    bdc_motor_set_speed(&motor_2_cfg, duty_cycle);
+}
+
+void ChassisControl::set_right_motors(float duty_cycle) {
+    bdc_motor_set_speed(&motor_3_cfg, duty_cycle);
+    bdc_motor_set_speed(&motor_4_cfg, duty_cycle);
 }
 
 std::uint32_t ChassisControl::get_range() {

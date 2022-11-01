@@ -23,9 +23,20 @@ typedef enum btn_select_e {
 } btn_select_e_t;
 
 class ChassisControl {
+    private:
+        bdc_motor_config_t motor_1_cfg; // left front
+        bdc_motor_config_t motor_2_cfg; // left back
+
+        bdc_motor_config_t motor_3_cfg; // right front
+        bdc_motor_config_t motor_4_cfg; // right back
+
     public:
-        std::uint32_t set_left_motors(std::uint32_t voltage);
-        std::uint32_t set_right_motors(std::uint32_t voltage);
+        void init_chassis();
+        void set_left_motors(float duty_cycle);
+        void set_right_motors(float duty_cycle);
+
+        void start_motors();
+        void stop_motors();
 
         std::uint32_t get_jstick(jstick_select_e_t jstick);
         std::uint32_t get_range();
