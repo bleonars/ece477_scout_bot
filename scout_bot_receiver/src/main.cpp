@@ -19,18 +19,29 @@ void setup() {
     motor_1_duty_cycle_char->setValue(motor_1_duty_cycle);
 
     g_rfmgr_srv.adv_start();
-
-    motor_a_cfg.m_mcpwm_out_gpios[0] = 15; 
-    motor_a_cfg.m_mcpwm_out_gpios[1] = 2; 
+    
+    motor_a_cfg.m_mcpwm_out_gpios[0] = 19; 
+    motor_a_cfg.m_mcpwm_out_gpios[1] = 21; 
     motor_a_cfg.m_mcpwm_unit         = MCPWM_UNIT_0;
     motor_a_cfg.m_mcpwm_timer        = MCPWM_TIMER_0;
     bdc_motor_setup(&motor_a_cfg);
-    bdc_motor_drive(&motor_a_cfg);
 }
 
 void loop() {
     auto service = g_rfmgr_srv.get_service(BLEUUID(SERVICE_UUID));
     auto motor_1_duty_cycle_char = service->get_characteristic(BLEUUID(MOTOR_1_DUTY_UUID));
-    g_log_mgr.println(std::to_string(Utils::payload_to_f32(motor_1_duty_cycle_char->getData())));
-    bdc_motor_set_speed(&motor_a_cfg, Utils::payload_to_f32(motor_1_duty_cycle_char->getData()));
+    float joystick_data = Utils::payload_to_f32(motor_1_duty_cycle_char->getData());
+    g_log_mgr.println(std::to_string(joystick_data));
+
+    if (joystick_data >= 45.f && joystick_data <= 55.f) {
+        bdc_motor_stop(&motor_a_cfg);
+    }
+    else if (joystick_data <= 5.f) {
+        bdc_motor_drive(&motor_a_cfg);
+        bdc_motor_set_speed(&motor_a_cfg, 100.f);
+    }
+    else if (joystick_data >= 95.f) {
+        bdc_motor_drive(&motor_a_cfg);
+        bdc_motor_set_speed(&motor_a_cfg, -100.f);
+    }
 }

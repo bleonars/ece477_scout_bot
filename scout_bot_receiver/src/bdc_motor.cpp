@@ -29,6 +29,8 @@ void bdc_motor_drive(bdc_motor_config_t *bdc_config) {
 }
 
 void bdc_motor_stop(bdc_motor_config_t *bdc_config) {
+    mcpwm_set_signal_low(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A);
+    mcpwm_set_signal_low(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B);
     mcpwm_stop(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer);
 }
 

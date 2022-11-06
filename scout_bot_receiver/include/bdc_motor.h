@@ -5,7 +5,7 @@
 #include "soc/mcpwm_struct.h"
 #include "soc/mcpwm_periph.h"
 
-#define VEX393_PWM_BASE_FREQ 200 /* VEX393 Motor Default Freq Hz */
+#define VEX393_PWM_BASE_FREQ 100 /* VEX393 Motor Default Freq Hz */
 
 static mcpwm_dev_t *mcpwm0_reg = &MCPWM0; /* MCPWM0 Unit Register */
 static mcpwm_dev_t *mcpwm1_reg = &MCPWM1; /* MCPWM0 Unit Register */
