@@ -12,6 +12,8 @@
 #define JOYSTICK_R_SEL 19
 
 #define JOYSTICK_MAX_V_ADC 4095
+#define JOYSTICK_CALIBRATION_BUF_SIZE 10
+#define JOYSTICK_DEADZONE_RATIO 0.05f
 
 /* PCB S3 */
 #define BUTTON_1_SEL 5
@@ -26,7 +28,8 @@
 #define BUTTON_4_SEL 21
 
 typedef struct joystick_config {
-    uint8_t m_joystick_gpio[3];
+    uint8_t  m_joystick_gpio[3];
+    float    m_calibration_offset;
 } joystick_config_t;
 
 typedef struct button_config {
@@ -55,7 +58,7 @@ uint8_t joystick_read_sel(joystick_config_t *jconfig);
  * @brief read analog joystick vertical axis
  * 
  * @param jconfig joystick config
- * @return float 0 - 1 value, 0.44-0.47 for no input, 1.0 for fully up, 0.0 for fully down
+ * @return float duty cycle 0% to 100%
  */
 float joystick_read_vert(joystick_config_t *jconfig);
 
@@ -63,9 +66,10 @@ float joystick_read_vert(joystick_config_t *jconfig);
  * @brief read analog joystick horizontal axis
  * 
  * @param jconfig joystick config
- * @return float 0 - 1 value, 0.44-0.47 for no input, 1.0 for fully left, 0.0 for fully right
+ * @return float duty cycle 0% to 100%
  */
 float joystick_read_horz(joystick_config_t *jconfig);
+
 
 
 /**

@@ -15,7 +15,7 @@ void setup() {
 
     auto service = g_rfmgr_srv.add_service(BLEUUID(SERVICE_UUID));
     auto motor_1_duty_cycle_char = service->add_characteristic(BLEUUID(MOTOR_1_DUTY_UUID), BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-    static float motor_1_duty_cycle = 0;
+    static float motor_1_duty_cycle = 50.f;
     motor_1_duty_cycle_char->setValue(motor_1_duty_cycle);
 
     g_rfmgr_srv.adv_start();
@@ -33,15 +33,6 @@ void loop() {
     float joystick_data = Utils::payload_to_f32(motor_1_duty_cycle_char->getData());
     g_log_mgr.println(std::to_string(joystick_data));
 
-    if (joystick_data >= 45.f && joystick_data <= 55.f) {
-        bdc_motor_stop(&motor_a_cfg);
-    }
-    else if (joystick_data <= 5.f) {
-        bdc_motor_drive(&motor_a_cfg);
-        bdc_motor_set_speed(&motor_a_cfg, 100.f);
-    }
-    else if (joystick_data >= 95.f) {
-        bdc_motor_drive(&motor_a_cfg);
-        bdc_motor_set_speed(&motor_a_cfg, -100.f);
-    }
+    bdc_motor_drive(&motor_a_cfg);
+    bdc_motor_set_speed(&motor_a_cfg, joystick_data);
 }
