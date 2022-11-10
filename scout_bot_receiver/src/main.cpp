@@ -9,7 +9,7 @@ ScoutBot_Server::RFManager_Server         g_rfmgr_srv;
 static std::array<bdc_motor_config_t, 4>  motor_cfg;
 static ChassisControl                     chassis_ctrl; 
 
-void setup_characteristics(ScoutBot_Server::RFManager_Service *receiver_service) {
+void setup_ble_characteristics(ScoutBot_Server::RFManager_Service *receiver_service) {
     static float    motor_zero_duty   = 0.f; 
     static uint32_t range_enable_off  = 0;
     static uint32_t drive_mode_arcade = 0;
@@ -63,7 +63,7 @@ void setup() {
     g_rfmgr_srv.setup("scout bot receiver v1.0");
     
     auto receiver_service = g_rfmgr_srv.add_service(BLEUUID(RECEIVER_SERVICE_UUID));
-    setup_characteristics(receiver_service);
+    setup_ble_characteristics(receiver_service);
 
     g_rfmgr_srv.adv_start();
     
