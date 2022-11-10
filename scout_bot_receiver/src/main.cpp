@@ -35,17 +35,16 @@ void setup() {
 
     delay(100);
     auto motor_1_duty_cycle_char = service->add_characteristic(BLEUUID(MOTOR_1_DUTY_UUID), BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-    static float motor_1_duty_cycle = 0;
+    static float motor_1_duty_cycle = 0.f;
     motor_1_duty_cycle_char->setValue(motor_1_duty_cycle);
 
     g_rfmgr_srv.adv_start();
-
-    motor_a_cfg.m_mcpwm_out_gpios[0] = 15; 
-    motor_a_cfg.m_mcpwm_out_gpios[1] = 2; 
+    
+    motor_a_cfg.m_mcpwm_out_gpios[0] = 19; 
+    motor_a_cfg.m_mcpwm_out_gpios[1] = 21; 
     motor_a_cfg.m_mcpwm_unit         = MCPWM_UNIT_0;
     motor_a_cfg.m_mcpwm_timer        = MCPWM_TIMER_0;
     bdc_motor_setup(&motor_a_cfg);
-    bdc_motor_drive(&motor_a_cfg);
 }
 
 void loop() {
@@ -66,6 +65,13 @@ void loop() {
     
 
     // g_log_mgr.println("dbg: characteristic value: " + std::to_string(Utils::payload_to_u32(characteristic->getData())));
+    //
+    auto motor_1_duty_cycle_char = service->get_characteristic(BLEUUID(MOTOR_1_DUTY_UUID));
+    float joystick_data = Utils::payload_to_f32(motor_1_duty_cycle_char->getData());
+    g_log_mgr.println(std::to_string(joystick_data));
+
+    bdc_motor_drive(&motor_a_cfg);
+    bdc_motor_set_speed(&motor_a_cfg, joystick_data);
 
     delay(10);
 }

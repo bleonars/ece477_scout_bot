@@ -1,6 +1,5 @@
 #include "bdc_motor.h"
 
-
 void bdc_motor_setup(bdc_motor_config_t *bdc_config) {
     
     if (bdc_config->m_mcpwm_unit == MCPWM_UNIT_0) {
@@ -16,8 +15,8 @@ void bdc_motor_setup(bdc_motor_config_t *bdc_config) {
     mcpwm_set_pin(bdc_config->m_mcpwm_unit, &bdc_config->m_pin_config);
     
     bdc_config->m_pwm_config.frequency    = VEX393_PWM_BASE_FREQ;
-    bdc_config->m_pwm_config.cmpr_a       = 0;
-    bdc_config->m_pwm_config.cmpr_b       = 0;
+    bdc_config->m_pwm_config.cmpr_a       = 50.f;
+    bdc_config->m_pwm_config.cmpr_b       = 50.f;
     bdc_config->m_pwm_config.duty_mode    = MCPWM_DUTY_MODE_0;
     bdc_config->m_pwm_config.counter_mode = MCPWM_UP_COUNTER;
     
@@ -29,25 +28,37 @@ void bdc_motor_drive(bdc_motor_config_t *bdc_config) {
 }
 
 void bdc_motor_stop(bdc_motor_config_t *bdc_config) {
+    bdc_motor_set_speed(bdc_config, 0.f);
     mcpwm_stop(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer);
 }
 
 void bdc_motor_set_speed(bdc_motor_config_t *bdc_config, float duty_cycle_percentage) {
-    /*mcpwm_set_signal_low(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A);*/
-    /*mcpwm_set_signal_low(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B);*/
+    float scaled_duty_cycle;
 
-    /* motor moves forward, with duty cycle = duty % */
-    if (duty_cycle_percentage >= 0) {
-        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, duty_cycle_percentage);
-        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, duty_cycle_percentage);
-        mcpwm_set_duty_type(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, MCPWM_DUTY_MODE_1);
-        mcpwm_set_duty_type(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, MCPWM_DUTY_MODE_0);
+    /* motor stops, set all signals low */
+    if (duty_cycle_percentage == 0.f) {
+        mcpwm_set_signal_low(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A);
+        mcpwm_set_signal_low(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B);
     }
+    
+    /* motor moves fowards */
+    else if (duty_cycle_percentage > 0.f) {
+        scaled_duty_cycle = 50.f + 50.f * (duty_cycle_percentage / 100.f);
 
-     /* motor moves backward, with duty cycle = -duty % */
-    else {
-        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, -1 * duty_cycle_percentage);
-        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, -1 * duty_cycle_percentage);
+        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, scaled_duty_cycle);
+        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, scaled_duty_cycle);
+
+        mcpwm_set_duty_type(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, MCPWM_DUTY_MODE_0);
+        mcpwm_set_duty_type(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, MCPWM_DUTY_MODE_1);
+    }
+    
+    /* motor moves backwards */
+    else if (duty_cycle_percentage < 0.f) {
+        scaled_duty_cycle = 50.f - 50.f * (std::abs(duty_cycle_percentage) / 100.f);
+
+        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, scaled_duty_cycle);
+        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, scaled_duty_cycle);
+
         mcpwm_set_duty_type(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, MCPWM_DUTY_MODE_0);
         mcpwm_set_duty_type(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, MCPWM_DUTY_MODE_1);
     }
