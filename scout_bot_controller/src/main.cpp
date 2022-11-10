@@ -43,7 +43,7 @@ void loop() {
     
     auto service = g_rfmgr_cl.pair_service(BLEUUID(SERVICE_UUID));
     auto motor_1_duty_cycle_char = g_rfmgr_cl.pair_characteristic(service, BLEUUID(MOTOR_1_DUTY_UUID));
-    auto joystick_vert_val = 100 * joystick_read_vert(&right_joystick);
+    auto joystick_vert_val = joystick_read_vert(&right_joystick);
     g_log_mgr.println("wrote value: " + std::to_string(joystick_vert_val));
     uint8_t *joystick_vert_payload = (uint8_t *) &joystick_vert_val;
     motor_1_duty_cycle_char->writeValue(joystick_vert_payload, sizeof(float));

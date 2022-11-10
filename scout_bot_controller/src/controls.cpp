@@ -35,14 +35,14 @@ static float joystick_read(joystick_config_t *jconfig, size_t port) {
 
         float ratio = (read - jconfig->m_calibration_offset) / upper_range;
 
-        return 50.f + (ratio * 100.f);
+        return 50.f + (ratio * 50.f);
     }
     else {
         static float lower_range = jconfig->m_calibration_offset;
 
         float ratio = (jconfig->m_calibration_offset - read) / lower_range;
         
-        return 50.f - (ratio * 100.f);
+        return 50.f - (ratio * 50.f);
     }
 }
 
