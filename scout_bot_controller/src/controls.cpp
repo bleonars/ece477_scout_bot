@@ -28,21 +28,21 @@ static float joystick_read(joystick_config_t *jconfig, size_t port) {
     float read = (float) analogRead(jconfig->m_joystick_gpio[0]);
 
     if (read >= deadzone_min && read <= deadzone_max) {
-        return 50.f;
+        return 0.f;
     }
     else if (read > deadzone_max) {
         static float upper_range = (JOYSTICK_MAX_V_ADC - jconfig->m_calibration_offset);
 
         float ratio = (read - jconfig->m_calibration_offset) / upper_range;
 
-        return 50.f + (ratio * 50.f);
+        return (ratio * 100.f);
     }
     else {
         static float lower_range = jconfig->m_calibration_offset;
 
         float ratio = (jconfig->m_calibration_offset - read) / lower_range;
         
-        return 50.f - (ratio * 50.f);
+        return -1.f * (ratio * 100.f);
     }
 }
 

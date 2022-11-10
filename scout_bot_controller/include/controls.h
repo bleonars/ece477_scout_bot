@@ -58,7 +58,7 @@ uint8_t joystick_read_sel(joystick_config_t *jconfig);
  * @brief read analog joystick vertical axis
  * 
  * @param jconfig joystick config
- * @return float duty cycle 0% to 100%
+ * @return float duty cycle 0% to 100%, negative for backwards
  */
 float joystick_read_vert(joystick_config_t *jconfig);
 
@@ -66,7 +66,7 @@ float joystick_read_vert(joystick_config_t *jconfig);
  * @brief read analog joystick horizontal axis
  * 
  * @param jconfig joystick config
- * @return float duty cycle 0% to 100%
+ * @return float duty cycle 0% to 100%, negative for backwards
  */
 float joystick_read_horz(joystick_config_t *jconfig);
 

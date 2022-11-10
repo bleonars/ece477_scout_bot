@@ -33,16 +33,31 @@ void bdc_motor_stop(bdc_motor_config_t *bdc_config) {
 }
 
 void bdc_motor_set_speed(bdc_motor_config_t *bdc_config, float duty_cycle_percentage) {
+    float scaled_duty_cycle;
+
     /* motor stops, set all signals low */
-    if (duty_cycle_percentage == 50.f) {
+    if (duty_cycle_percentage == 0.f) {
         mcpwm_set_signal_low(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A);
         mcpwm_set_signal_low(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B);
     }
     
-    /* motor moves forward or backwards */
-    else {
-        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, duty_cycle_percentage);
-        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, duty_cycle_percentage);
+    /* motor moves fowards */
+    else if (duty_cycle_percentage > 0.f) {
+        scaled_duty_cycle = 50.f + 50.f * (duty_cycle_percentage / 100.f);
+
+        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, scaled_duty_cycle);
+        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, scaled_duty_cycle);
+
+        mcpwm_set_duty_type(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, MCPWM_DUTY_MODE_0);
+        mcpwm_set_duty_type(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, MCPWM_DUTY_MODE_1);
+    }
+    
+    /* motor moves backwards */
+    else if (duty_cycle_percentage < 0.f) {
+        scaled_duty_cycle = 50.f - 50.f * (std::abs(duty_cycle_percentage) / 100.f);
+
+        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, scaled_duty_cycle);
+        mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, scaled_duty_cycle);
 
         mcpwm_set_duty_type(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, MCPWM_DUTY_MODE_0);
         mcpwm_set_duty_type(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, MCPWM_DUTY_MODE_1);

@@ -15,7 +15,7 @@ void setup() {
 
     auto service = g_rfmgr_srv.add_service(BLEUUID(SERVICE_UUID));
     auto motor_1_duty_cycle_char = service->add_characteristic(BLEUUID(MOTOR_1_DUTY_UUID), BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-    static float motor_1_duty_cycle = 50.f;
+    static float motor_1_duty_cycle = 0.f;
     motor_1_duty_cycle_char->setValue(motor_1_duty_cycle);
 
     g_rfmgr_srv.adv_start();
