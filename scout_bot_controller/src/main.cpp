@@ -49,7 +49,7 @@ void loop() {
     uint8_t *range_enabled_payload = (uint8_t *) &range_enabled;
     receiver_service->getCharacteristic(RANGE_ENABLE_CHARACTERISTIC_UUID)->writeValue(range_enabled_payload, sizeof(uint32_t));
 
-    uint32_t drive_mode = button_read_sel(&buttons, 0);
+    uint32_t drive_mode = button_read_sel(&buttons, 1);
     uint8_t *drive_mode_payload = (uint8_t *) &drive_mode;
     receiver_service->getCharacteristic(DRIVE_MODE_CHARACTERISTIC_UUID)->writeValue(drive_mode_payload, sizeof(uint32_t));
 }
