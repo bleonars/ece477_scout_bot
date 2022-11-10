@@ -18,7 +18,7 @@ void setup() {
 
     g_rfmgr_cl.setup("scout bot controller v1.0");
     while (!g_rfmgr_cl.found()) {
-        g_rfmgr_cl.adv_scan_start(BLEUUID(SERVICE_UUID), true, 1349, 449, 5);
+        g_rfmgr_cl.adv_scan_start(BLEUUID(RECEIVER_SERVICE_UUID), true, 1349, 449, 5);
         g_log_mgr.print("\n\n");
     }
 
@@ -27,10 +27,29 @@ void setup() {
 }
 
 void loop() {
-    auto service = g_rfmgr_cl.pair_service(BLEUUID(SERVICE_UUID));
-    auto motor_1_duty_cycle_char = g_rfmgr_cl.pair_characteristic(service, BLEUUID(MOTOR_1_DUTY_UUID));
-    auto joystick_vert_val = joystick_read_vert(&right_joystick);
-    g_log_mgr.println("wrote value: " + std::to_string(joystick_vert_val));
-    uint8_t *joystick_vert_payload = (uint8_t *) &joystick_vert_val;
-    motor_1_duty_cycle_char->writeValue(joystick_vert_payload, sizeof(float));
+    auto receiver_service = g_rfmgr_cl.pair_service(BLEUUID(RECEIVER_SERVICE_UUID));
+
+    float right_joy_x = joystick_read_horz(&right_joystick);
+    uint8_t *right_joy_x_payload = (uint8_t *) &right_joy_x;
+    receiver_service->getCharacteristic(RIGHT_JS_X_CHARACTERISTIC_UUID)->writeValue(right_joy_x_payload, sizeof(float));
+
+    float right_joy_y = joystick_read_vert(&right_joystick);
+    uint8_t *right_joy_y_payload = (uint8_t *) &right_joy_y;
+    receiver_service->getCharacteristic(RIGHT_JS_Y_CHARACTERISTIC_UUID)->writeValue(right_joy_y_payload, sizeof(float));
+
+    float left_joy_x = joystick_read_horz(&left_joystick);
+    uint8_t *left_joy_x_payload = (uint8_t *) &left_joy_x;
+    receiver_service->getCharacteristic(LEFT_JS_X_CHARACTERISTIC_UUID)->writeValue(left_joy_x_payload, sizeof(float));
+
+    float left_joy_y = joystick_read_vert(&left_joystick);
+    uint8_t *left_joy_y_payload = (uint8_t *) &left_joy_y;
+    receiver_service->getCharacteristic(LEFT_JS_Y_CHARACTERISTIC_UUID)->writeValue(left_joy_y_payload, sizeof(float));
+    
+    uint32_t range_enabled = button_read_sel(&buttons, 0);
+    uint8_t *range_enabled_payload = (uint8_t *) &range_enabled;
+    receiver_service->getCharacteristic(RANGE_ENABLE_CHARACTERISTIC_UUID)->writeValue(range_enabled_payload, sizeof(uint32_t));
+
+    uint32_t drive_mode = button_read_sel(&buttons, 0);
+    uint8_t *drive_mode_payload = (uint8_t *) &drive_mode;
+    receiver_service->getCharacteristic(DRIVE_MODE_CHARACTERISTIC_UUID)->writeValue(drive_mode_payload, sizeof(uint32_t));
 }

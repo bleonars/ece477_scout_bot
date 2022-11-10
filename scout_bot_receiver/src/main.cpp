@@ -62,7 +62,7 @@ void setup() {
 
     g_rfmgr_srv.setup("scout bot receiver v1.0");
     
-    auto receiver_service = g_rfmgr_srv.add_service(BLEUUID(SERVICE_UUID));
+    auto receiver_service = g_rfmgr_srv.add_service(BLEUUID(RECEIVER_SERVICE_UUID));
     setup_characteristics(receiver_service);
 
     g_rfmgr_srv.adv_start();
@@ -71,7 +71,7 @@ void setup() {
 }
 
 void loop() {
-    auto receiver_service = g_rfmgr_srv.get_service(BLEUUID(SERVICE_UUID));
+    auto receiver_service = g_rfmgr_srv.get_service(BLEUUID(RECEIVER_SERVICE_UUID));
     
     float left_joy_y  = Utils::payload_to_f32(receiver_service->get_characteristic(BLEUUID(LEFT_JS_Y_CHARACTERISTIC_UUID))->getData());
     float right_joy_y = Utils::payload_to_f32(receiver_service->get_characteristic(BLEUUID(RIGHT_JS_Y_CHARACTERISTIC_UUID))->getData());

@@ -21,6 +21,7 @@ void bdc_motor_setup(bdc_motor_config_t *bdc_config) {
     bdc_config->m_pwm_config.counter_mode = MCPWM_UP_COUNTER;
     
     mcpwm_init(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, &bdc_config->m_pwm_config);
+    bdc_motor_stop(bdc_config);
 }
 
 void bdc_motor_drive(bdc_motor_config_t *bdc_config) {
