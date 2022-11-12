@@ -62,12 +62,46 @@ void loop() {
             g_chassis_ctrl.stop_left_motors();
             g_chassis_ctrl.stop_right_motors();
         }
-        else {
+        /* no vertical input, only left & right */
+        else if (left_y == 0.f) {
+            g_chassis_ctrl.start_left_motors();
+            g_chassis_ctrl.start_right_motors();
 
+            g_chassis_ctrl.set_left_motors(-right_x);
+            g_chassis_ctrl.set_right_motors(right_x);
+        }
+        /* no horizontal input, only forward & backwards */
+        else if (right_x == 0.f) {
+            g_chassis_ctrl.start_left_motors();
+            g_chassis_ctrl.start_right_motors();
+
+            g_chassis_ctrl.set_left_motors(left_y);
+            g_chassis_ctrl.set_right_motors(left_y);
+        }
+        /* both horizontal input and vertical input, forward/backward & left/right */
+        else {
+            float left_out  = std::clamp(left_y + right_x, -100.f, 100.f);
+            float right_out = std::clamp(left_y - right_x, -100.f, 100.f);
+
+            if (left_out == 0.f) {
+                g_chassis_ctrl.stop_left_motors();
+            }
+            else {
+                g_chassis_ctrl.start_left_motors();
+                g_chassis_ctrl.set_left_motors(left_out);
+            }
+
+            if (right_out == 0.f) {
+                g_chassis_ctrl.stop_right_motors();
+            }
+            else {
+                g_chassis_ctrl.start_right_motors();
+                g_chassis_ctrl.set_right_motors(right_out);
+            }
         }
     }
     else if (g_chassis_ctrl.get_drive_mode(receiver_service) == DRIVE_MODE_TANK) {
-        float left_y = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_LEFT_Y);
+        float left_y  = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_LEFT_Y);
         float right_y = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_RIGHT_Y);
         
         /* no input, disable both sides of motors */

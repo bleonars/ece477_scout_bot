@@ -13,7 +13,6 @@
 #define RANGE_ENABLE_CHARACTERISTIC_UUID "00000000-0000-0000-0000-000000000005"
 #define DRIVE_MODE_CHARACTERISTIC_UUID   "00000000-0000-0000-0000-000000000006"
 
-
 /* freertos */
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
@@ -25,5 +24,8 @@
 
 /* internal */
 #include "logmgr.h"
+
+/* stl */
+#include <algorithm>
 
 #endif
