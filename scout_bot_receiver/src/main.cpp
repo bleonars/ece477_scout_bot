@@ -80,21 +80,22 @@ void loop() {
             g_chassis_ctrl.stop_left_motors();
             g_chassis_ctrl.start_right_motors();
             
-            /* todo; drive right side of motors, figure out input direction & coordinate with motor placement on chassis to set motor speed */
+            g_chassis_ctrl.set_right_motors(right_y);
         }
         /* no right input, disable right side of motors, start left side */
         else if (right_y == 0.f) {
             g_chassis_ctrl.stop_right_motors();
             g_chassis_ctrl.start_left_motors();
 
-            /* todo; drive left side of motors, figure out input direction & coordinate with motor placement on chassis to set motor speed */
+            g_chassis_ctrl.set_left_motors(left_y);
         }
         /* left and right input, start both sides of motors */
         else {
             g_chassis_ctrl.start_right_motors();
             g_chassis_ctrl.start_left_motors();
 
-            /* todo; drive both sides of motors, figure out input direction & coordinate with motor placement on chassis to set motor speed */
+            g_chassis_ctrl.set_left_motors(left_y);
+            g_chassis_ctrl.set_right_motors(right_y);
         }
     }
 }

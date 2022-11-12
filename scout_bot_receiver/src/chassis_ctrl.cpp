@@ -51,12 +51,12 @@ void ChassisControl::stop_right_motors() {
 
 void ChassisControl::set_left_motors(float duty_cycle) {
     bdc_motor_set_speed(&m_motor_cfg[0], duty_cycle);
-    bdc_motor_set_speed(&m_motor_cfg[1], duty_cycle);
+    bdc_motor_set_speed(&m_motor_cfg[1], -duty_cycle);
 }
 
 void ChassisControl::set_right_motors(float duty_cycle) {
     bdc_motor_set_speed(&m_motor_cfg[2], duty_cycle);
-    bdc_motor_set_speed(&m_motor_cfg[3], duty_cycle);
+    bdc_motor_set_speed(&m_motor_cfg[3], -duty_cycle);
 }
 
 void ChassisControl::setup_rangefinder(){
