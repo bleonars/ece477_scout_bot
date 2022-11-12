@@ -25,6 +25,8 @@ void ChassisControl::init_chassis() {
     m_motor_cfg[3].m_mcpwm_unit         = MCPWM_UNIT_1;
     m_motor_cfg[3].m_mcpwm_timer        = MCPWM_TIMER_1;
     bdc_motor_setup(&m_motor_cfg[3]);
+
+    setup_rangefinder();
 }
 
 void ChassisControl::start_left_motors() {
@@ -57,8 +59,23 @@ void ChassisControl::set_right_motors(float duty_cycle) {
     bdc_motor_set_speed(&m_motor_cfg[3], duty_cycle);
 }
 
+void ChassisControl::setup_rangefinder(){
+    pinMode(TRIG_PIN, OUTPUT);
+    pinMode(ECHO_PIN, INPUT);
+
+    // Insert Timer Here
+}
+
 float ChassisControl::get_range() {
-    return 0.f;
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2); // Replace with Timer Interrupt
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10); // Replace with Timer Interrupt
+    digitalWrite(TRIG_PIN, LOW);
+
+    float duration = pulseIn(ECHO_PIN, HIGH);
+    float distance = (duration * SOUND_SPEED / 2);
+    return distance;
 }
 
 float ChassisControl::get_jstick(ScoutBot_Server::RFManager_Service *receiver_service, jstick_select_e_t jstick) {

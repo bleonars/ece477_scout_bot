@@ -8,6 +8,13 @@
 #include "bdc_motor.h"
 #include "rfmgr_srv.h"
 
+// Timer Values
+#define SOUND_SPEED 0.034 // Speed of Sound in cm/uS
+#define SIZE_EQUALIZER_IN 0.5
+#define CM_TO_IN 0.393701
+#define ECHO_PIN 33;
+#define TRIG_PIN 32;
+
 // ----------------------------------------------------------------
 // This header contains the class which provides low level control
 // for all the components on the reciever (robot), as well as definitions
@@ -56,6 +63,7 @@ public:
     bool is_range_enabled(ScoutBot_Server::RFManager_Service *receiver_service);
     drive_mode_e get_drive_mode(ScoutBot_Server::RFManager_Service *receiver_service);
 
+    void setup_rangefinder();
     float get_range();
 };
 
