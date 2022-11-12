@@ -8,7 +8,7 @@
 #include "bdc_motor.h"
 #include "rfmgr_srv.h"
 
-// Timer Values
+// Rangefinder Values
 #define SOUND_SPEED 0.034 // Speed of Sound in cm/uS
 #define SIZE_EQUALIZER_IN 0.5
 #define CM_TO_IN 0.393701
@@ -47,6 +47,8 @@ private:
     /*          BACK         */
     std::array<bdc_motor_config_t, 4> m_motor_cfg;
 
+    hw_timer_t * rngFTimer;
+
 public:
     void init_chassis();
 
@@ -65,6 +67,7 @@ public:
 
     void setup_rangefinder();
     float get_range();
+    int distanceSetting();
 };
 
 extern ChassisControl g_chassis_ctrl;

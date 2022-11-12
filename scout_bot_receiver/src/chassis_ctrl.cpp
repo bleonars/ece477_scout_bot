@@ -63,19 +63,42 @@ void ChassisControl::setup_rangefinder(){
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
 
-    // Insert Timer Here
+    // Timer 2 for every microsecond, 12.5 * 80
+    rngFTimer = timer(2, 80, true);
+    timerAttachInterrupt(rngFTimer, get_range, true);
+    // Currently runs every 100000 * 1 us = 0.1 seconds
+    timerAlarmWrite(rngFTimer, 100000, true);
+    timerAlarmEnable(rngFTimer);
 }
 
 float ChassisControl::get_range() {
     digitalWrite(TRIG_PIN, LOW);
-    delayMicroseconds(2); // Replace with Timer Interrupt
+    delayMicroseconds(2);
     digitalWrite(TRIG_PIN, HIGH);
-    delayMicroseconds(10); // Replace with Timer Interrupt
+    delayMicroseconds(10);
     digitalWrite(TRIG_PIN, LOW);
 
     float duration = pulseIn(ECHO_PIN, HIGH);
     float distance = (duration * SOUND_SPEED / 2);
+    
     return distance;
+}
+
+int ChassisControl::distanceSetting() {
+    int setting; // 0 for close, 1 to medium distance, 2 for free range
+    float length = get_range() * CM_TO_IN;
+
+    if (length <= 6){
+        setting = 0;
+    }
+    else if (10 > length > 6) {
+        setting = 1;
+    }
+    else {
+        setting = 2;
+    }
+
+    return setting;
 }
 
 float ChassisControl::get_jstick(ScoutBot_Server::RFManager_Service *receiver_service, jstick_select_e_t jstick) {
