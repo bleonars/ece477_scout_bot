@@ -35,6 +35,7 @@ void setup() {
     g_log_mgr.println("scout bot receiver v1.0");
 
     g_chassis_ctrl.init_chassis();
+    g_chassis_ctrl.start_motors();
 
     g_rfmgr_srv.setup("scout bot receiver v1.0");
     
@@ -45,91 +46,75 @@ void setup() {
 }
 
 void loop() {
-    auto receiver_service = g_rfmgr_srv.get_service(BLEUUID(RECEIVER_SERVICE_UUID));
-
     /* based on range detection mode, active drive mode, and current joystick readings perform drive code actions        */
     /* notes; each joystick is read with [-100, 100] range. 0 reading indicates joystick is in the middle (no action)    */
     /*      ; write this value to motor_set_speed. remember, we have to arrange the motor direction correctly, so that   */
     /*      ; correct motors move backwards or forwards based on the direction we want to go... might have to negate the */
     /*      ; value read from joysticks accordingly                                                                      */
     
-    if (g_chassis_ctrl.get_drive_mode(receiver_service) == DRIVE_MODE_ARCADE) {
-        float left_y  = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_LEFT_Y);
-        float right_x = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_RIGHT_X);
-        
-        /* no input, disable both sides of motors */
-        if (left_y == 0.f && right_x == 0.f) {
-            g_chassis_ctrl.stop_left_motors();
-            g_chassis_ctrl.stop_right_motors();
-        }
-        /* no vertical input, only left & right */
-        else if (left_y == 0.f) {
-            g_chassis_ctrl.start_left_motors();
-            g_chassis_ctrl.start_right_motors();
+    // if (g_chassis_ctrl.get_drive_mode(receiver_service) == DRIVE_MODE_ARCADE) {
+    //     float left_y  = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_LEFT_Y);
+    //     float right_x = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_RIGHT_X);
+    //     
+    //     /* no input, disable both sides of motors */
+    //     if (left_y == 0.f && right_x == 0.f) {
+    //         g_chassis_ctrl.stop_left_motors();
+    //         g_chassis_ctrl.stop_right_motors();
+    //     }
+    //     /* no vertical input, only left & right */
+    //     else if (left_y == 0.f) {
+    //         g_chassis_ctrl.start_left_motors();
+    //         g_chassis_ctrl.start_right_motors();
+    //
+    //         g_chassis_ctrl.set_left_motors(-right_x);
+    //         g_chassis_ctrl.set_right_motors(right_x);
+    //     }
+    //     /* no horizontal input, only forward & backwards */
+    //     else if (right_x == 0.f) {
+    //         g_chassis_ctrl.start_left_motors();
+    //         g_chassis_ctrl.start_right_motors();
+    //
+    //         g_chassis_ctrl.set_left_motors(left_y);
+    //         g_chassis_ctrl.set_right_motors(left_y);
+    //     }
+    //     /* both horizontal input and vertical input, forward/backward & left/right */
+    //     else {
+    //         float left_out  = std::clamp(left_y + right_x, -100.f, 100.f);
+    //         float right_out = std::clamp(left_y - right_x, -100.f, 100.f);
+    //
+    //         if (left_out == 0.f) {
+    //             g_chassis_ctrl.stop_left_motors();
+    //         }
+    //         else {
+    //             g_chassis_ctrl.start_left_motors();
+    //             g_chassis_ctrl.set_left_motors(left_out);
+    //         }
+    //
+    //         if (right_out == 0.f) {
+    //             g_chassis_ctrl.stop_right_motors();
+    //         }
+    //         else {
+    //             g_chassis_ctrl.start_right_motors();
+    //             g_chassis_ctrl.set_right_motors(right_out);
+    //         }
+    //     }
+    // }
+    if (g_chassis_ctrl.get_connected()) {
 
-            g_chassis_ctrl.set_left_motors(-right_x);
-            g_chassis_ctrl.set_right_motors(right_x);
-        }
-        /* no horizontal input, only forward & backwards */
-        else if (right_x == 0.f) {
-            g_chassis_ctrl.start_left_motors();
-            g_chassis_ctrl.start_right_motors();
+        auto receiver_service = g_rfmgr_srv.get_service(BLEUUID(RECEIVER_SERVICE_UUID));
 
-            g_chassis_ctrl.set_left_motors(left_y);
-            g_chassis_ctrl.set_right_motors(left_y);
-        }
-        /* both horizontal input and vertical input, forward/backward & left/right */
-        else {
-            float left_out  = std::clamp(left_y + right_x, -100.f, 100.f);
-            float right_out = std::clamp(left_y - right_x, -100.f, 100.f);
+        if (true /*g_chassis_ctrl.get_drive_mode(receiver_service) == DRIVE_MODE_TANK*/) {
 
-            if (left_out == 0.f) {
-                g_chassis_ctrl.stop_left_motors();
-            }
-            else {
-                g_chassis_ctrl.start_left_motors();
-                g_chassis_ctrl.set_left_motors(left_out);
-            }
+            float left_y  = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_LEFT_Y);
+            float right_y = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_RIGHT_Y);
 
-            if (right_out == 0.f) {
-                g_chassis_ctrl.stop_right_motors();
-            }
-            else {
-                g_chassis_ctrl.start_right_motors();
-                g_chassis_ctrl.set_right_motors(right_out);
-            }
-        }
-    }
-    else if (g_chassis_ctrl.get_drive_mode(receiver_service) == DRIVE_MODE_TANK) {
-        float left_y  = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_LEFT_Y);
-        float right_y = g_chassis_ctrl.get_jstick(receiver_service, JOYSTICK_RIGHT_Y);
-        
-        /* no input, disable both sides of motors */
-        if (left_y == 0.f && right_y == 0.f) {
-            g_chassis_ctrl.stop_left_motors();
-            g_chassis_ctrl.stop_right_motors();
-        }
-        /* no left input, disable left side of motors, start right side */
-        else if (left_y == 0.f) {
-            g_chassis_ctrl.stop_left_motors();
-            g_chassis_ctrl.start_right_motors();
+            float left_speed  = g_chassis_ctrl.scale_input_to_speed(left_y);
+            float right_speed = g_chassis_ctrl.scale_input_to_speed(right_y);
             
-            g_chassis_ctrl.set_right_motors(right_y);
+            g_chassis_ctrl.set_left_motors_speed(left_speed);
+            g_chassis_ctrl.set_right_motors_speed(right_speed);
         }
-        /* no right input, disable right side of motors, start left side */
-        else if (right_y == 0.f) {
-            g_chassis_ctrl.stop_right_motors();
-            g_chassis_ctrl.start_left_motors();
-
-            g_chassis_ctrl.set_left_motors(left_y);
-        }
-        /* left and right input, start both sides of motors */
-        else {
-            g_chassis_ctrl.start_right_motors();
-            g_chassis_ctrl.start_left_motors();
-
-            g_chassis_ctrl.set_left_motors(left_y);
-            g_chassis_ctrl.set_right_motors(right_y);
-        }
+        
+        delay(100);
     }
 }

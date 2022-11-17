@@ -12,8 +12,8 @@
 #define SOUND_SPEED 0.034 // Speed of Sound in cm/uS
 #define SIZE_EQUALIZER_IN 0.5
 #define CM_TO_IN 0.393701
-#define ECHO_PIN 33;
-#define TRIG_PIN 32;
+#define ECHO_PIN 33
+#define TRIG_PIN 32
 
 // ----------------------------------------------------------------
 // This header contains the class which provides low level control
@@ -48,26 +48,31 @@ private:
     std::array<bdc_motor_config_t, 4> m_motor_cfg;
 
     hw_timer_t * rngFTimer;
+    
+    bool m_connected;
 
 public:
     void init_chassis();
 
-    void set_left_motors(float duty_cycle);
-    void set_right_motors(float duty_cycle);
+    void set_left_motors_speed(float speed);
+    void set_right_motors_speed(float speed);
 
-    void start_left_motors();
-    void start_right_motors();
-    void stop_left_motors();
-    void stop_right_motors();
+    void start_motors();
+    void stop_motors();
 
     float get_jstick(ScoutBot_Server::RFManager_Service *receiver_service, jstick_select_e_t jstick);
 
     bool is_range_enabled(ScoutBot_Server::RFManager_Service *receiver_service);
     drive_mode_e get_drive_mode(ScoutBot_Server::RFManager_Service *receiver_service);
+    
+    void set_connected(bool connected) { m_connected = connected; }
+    bool get_connected() { return m_connected; }
 
     void setup_rangefinder();
     float get_range();
     int distanceSetting();
+
+    float scale_input_to_speed(float input);
 };
 
 extern ChassisControl g_chassis_ctrl;

@@ -1,4 +1,5 @@
 #include "rfmgr_srv.h"
+#include "chassis_ctrl.h"
 
 using namespace ScoutBot_Server;
 
@@ -85,10 +86,15 @@ void RFManager_Server_Callbacks::onConnect(BLEServer *server) {
 #ifdef SERVER_DBG
     g_log_mgr.println("dbg: paired with client, connection count: " + std::to_string(server->getConnectedCount()));
 #endif
+    
+    g_chassis_ctrl.set_connected(true);
 } 
 
 void RFManager_Server_Callbacks::onDisconnect(BLEServer *server) {
 #ifdef SERVER_DBG
     g_log_mgr.println("dbg: paired with client, connection count: " + std::to_string(server->getConnectedCount()));
 #endif
+
+    g_chassis_ctrl.stop_motors();
+    g_chassis_ctrl.set_connected(false);
 } 

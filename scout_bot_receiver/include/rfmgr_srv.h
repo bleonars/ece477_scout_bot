@@ -94,7 +94,7 @@ namespace ScoutBot_Server {
          * @return RFManager_Service service object
          */
         RFManager_Service *get_service(BLEUUID serv_uuid);
-        
+
     private:
         BLEServer                                 *m_server;              /* server obj */
         BLEAdvertising                            *m_adv_obj;             /* advertising obj */

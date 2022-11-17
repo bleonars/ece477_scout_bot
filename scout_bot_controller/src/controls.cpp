@@ -21,37 +21,33 @@ uint8_t joystick_read_sel(joystick_config_t *jconfig) {
     return digitalRead(jconfig->m_joystick_gpio[2]) != HIGH;
 }
 
-static float joystick_read(joystick_config_t *jconfig, size_t port) {
-    static float deadzone_max = (float) jconfig->m_calibration_offset * (1.f + JOYSTICK_DEADZONE_RATIO);
-    static float deadzone_min = (float) jconfig->m_calibration_offset * (1.f - JOYSTICK_DEADZONE_RATIO);
+static float joystick_read(joystick_config_t *jconfig, size_t port, float deadzone_ratio) {
+    float deadzone_upper_volt = (float) jconfig->m_calibration_offset * (1.f + deadzone_ratio);
+    float deadzone_lower_volt = (float) jconfig->m_calibration_offset * (1.f - deadzone_ratio);
     
-    float read = (float) analogRead(jconfig->m_joystick_gpio[0]);
+    float adc_read_volt = (float) analogRead(jconfig->m_joystick_gpio[port]);
 
-    if (read >= deadzone_min && read <= deadzone_max) {
+    if (adc_read_volt >= deadzone_lower_volt && adc_read_volt <= deadzone_upper_volt)
         return 0.f;
-    }
-    else if (read > deadzone_max) {
-        static float upper_range = (JOYSTICK_MAX_V_ADC - jconfig->m_calibration_offset);
 
-        float ratio = (read - jconfig->m_calibration_offset) / upper_range;
+    if (adc_read_volt > deadzone_upper_volt) {
+        float input_ratio = (adc_read_volt - deadzone_upper_volt) / (JOYSTICK_MAX_V_ADC - deadzone_upper_volt);
 
-        return (ratio * 100.f);
+        return (input_ratio * 100.f);
     }
     else {
-        static float lower_range = jconfig->m_calibration_offset;
-
-        float ratio = (jconfig->m_calibration_offset - read) / lower_range;
+        float input_ratio = (deadzone_lower_volt - adc_read_volt) / deadzone_lower_volt;
         
-        return -1.f * (ratio * 100.f);
+        return -(input_ratio * 100.f);
     }
 }
 
 float joystick_read_vert(joystick_config_t *jconfig) {
-    return joystick_read(jconfig, 0);
+    return joystick_read(jconfig, 0, JOYSTICK_DEADZONE_RATIO);
 }
 
 float joystick_read_horz(joystick_config_t *jconfig) {
-    return joystick_read(jconfig, 1);
+    return joystick_read(jconfig, 1, JOYSTICK_DEADZONE_RATIO);
 }
 
 void button_setup(button_config_t *bconfig, uint8_t pin_1, uint8_t pin_2, uint8_t pin_3, uint8_t pin_4) {

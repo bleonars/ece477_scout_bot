@@ -21,6 +21,7 @@ void bdc_motor_setup(bdc_motor_config_t *bdc_config) {
     bdc_config->m_pwm_config.counter_mode = MCPWM_UP_COUNTER;
     
     mcpwm_init(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, &bdc_config->m_pwm_config);
+
     bdc_motor_stop(bdc_config);
 }
 
@@ -34,7 +35,7 @@ void bdc_motor_stop(bdc_motor_config_t *bdc_config) {
 }
 
 void bdc_motor_set_speed(bdc_motor_config_t *bdc_config, float duty_cycle_percentage) {
-    float scaled_duty_cycle;
+    duty_cycle_percentage = std::clamp(duty_cycle_percentage, -100.f, 100.f);
 
     /* motor stops, set all signals low */
     if (duty_cycle_percentage == 0.f) {
@@ -44,7 +45,7 @@ void bdc_motor_set_speed(bdc_motor_config_t *bdc_config, float duty_cycle_percen
     
     /* motor moves fowards */
     else if (duty_cycle_percentage > 0.f) {
-        scaled_duty_cycle = 50.f + 50.f * (duty_cycle_percentage / 100.f);
+        float scaled_duty_cycle = 50.f + 50.f * (duty_cycle_percentage / 100.f);
 
         mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, scaled_duty_cycle);
         mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, scaled_duty_cycle);
@@ -55,7 +56,7 @@ void bdc_motor_set_speed(bdc_motor_config_t *bdc_config, float duty_cycle_percen
     
     /* motor moves backwards */
     else if (duty_cycle_percentage < 0.f) {
-        scaled_duty_cycle = 50.f - 50.f * (-duty_cycle_percentage / 100.f);
+        float scaled_duty_cycle = 50.f - 50.f * (-duty_cycle_percentage / 100.f);
 
         mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A, scaled_duty_cycle);
         mcpwm_set_duty(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_B, scaled_duty_cycle);
