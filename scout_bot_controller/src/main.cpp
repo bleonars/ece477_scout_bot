@@ -10,7 +10,9 @@ button_config_t buttons;
 
 void setup() {
     g_log_mgr.allocate(UART_NUM_0, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE, 1024, 0, 115200);
+#ifdef CLIENT_DBG
     g_log_mgr.println("scout bot controller v1.0");
+#endif
 
     joystick_setup(&right_joystick, JOYSTICK_R_VERT, JOYSTICK_R_HORZ, JOYSTICK_R_SEL);
     joystick_setup(&left_joystick, JOYSTICK_L_VERT, JOYSTICK_L_HORZ, JOYSTICK_L_SEL);
@@ -19,7 +21,9 @@ void setup() {
     g_rfmgr_cl.setup("scout bot controller v1.0");
     while (!g_rfmgr_cl.found()) {
         g_rfmgr_cl.adv_scan_start(BLEUUID(RECEIVER_SERVICE_UUID), true, 1349, 449, 5);
+#ifdef CLIENT_DBG
         g_log_mgr.print("\n\n");
+#endif
     }
 
     while (!g_rfmgr_cl.paired())
@@ -55,5 +59,5 @@ void loop() {
     uint8_t *drive_mode_payload = (uint8_t *) &drive_mode;
     receiver_service->getCharacteristic(DRIVE_MODE_CHARACTERISTIC_UUID)->writeValue(drive_mode_payload, sizeof(uint8_t));
     
-    delay(50);
+    delay(20);
 }

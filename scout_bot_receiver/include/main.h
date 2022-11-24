@@ -2,7 +2,7 @@
 #define __MAIN_H__
 
 /* macros */
-#define SERVER_DBG
+// #define SERVER_DBG
 
 /* ble macros */
 #define RECEIVER_SERVICE_UUID            "77777777-7777-7777-7777-777777777777"

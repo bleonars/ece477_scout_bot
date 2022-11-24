@@ -8,13 +8,6 @@
 #include "bdc_motor.h"
 #include "rfmgr_srv.h"
 
-// Rangefinder Values
-#define SOUND_SPEED 0.034 // Speed of Sound in cm/uS
-#define SIZE_EQUALIZER_IN 0.5
-#define CM_TO_IN 0.393701
-#define ECHO_PIN 33
-#define TRIG_PIN 32
-
 // ----------------------------------------------------------------
 // This header contains the class which provides low level control
 // for all the components on the reciever (robot), as well as definitions
@@ -27,7 +20,6 @@ typedef enum jstick_select_e {
     JOYSTICK_LEFT_Y,  ///< Left Y Axis Joystrick
     JOYSTICK_INVALID = INT_MAX
 } jstick_select_e_t;
-
 typedef enum btn_select_e {
     BTN_DRIVE_MODE, ///< button for toggling the drive mode
     BTN_RANGE_EN,   ///< button for toggling the range finder
@@ -46,10 +38,8 @@ private:
     /* motor 2  ---- motor 3 */
     /*          BACK         */
     std::array<bdc_motor_config_t, 4> m_motor_cfg;
-
-    hw_timer_t * rngFTimer;
-    
-    bool m_connected;
+    hw_timer_t                       *m_range_finder_timer;
+    bool                              m_connected;
 
 public:
     void init_chassis();
@@ -68,11 +58,11 @@ public:
     void set_connected(bool connected) { m_connected = connected; }
     bool get_connected() { return m_connected; }
 
-    void setup_rangefinder();
-    float get_range();
-    int distanceSetting();
+    float scale_input_to_speed(float current_speed, float input_speed);
 
-    float scale_input_to_speed(float input);
+    void range_finder_setup();
+    static void range_finder_callback();
+    int distanceSetting();
 };
 
 extern ChassisControl g_chassis_ctrl;

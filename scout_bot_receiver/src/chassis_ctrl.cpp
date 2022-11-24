@@ -3,6 +3,17 @@
 
 #include <cmath>
 
+/**
+ * Range Finder Macros
+ */
+#define SOUND_SPEED       0.034f
+#define SIZE_EQUALIZER_IN 0.5f
+#define CM_TO_IN          0.393701f
+
+#define ECHO_PIN_1 33
+#define ECHO_PIN_2 25
+#define TRIG_PIN   32
+
 void ChassisControl::init_chassis() {
     m_motor_cfg[0].m_mcpwm_out_gpios[0] = 5; 
     m_motor_cfg[0].m_mcpwm_out_gpios[1] = 18; 
@@ -28,7 +39,7 @@ void ChassisControl::init_chassis() {
     m_motor_cfg[3].m_mcpwm_timer        = MCPWM_TIMER_1;
     bdc_motor_setup(&m_motor_cfg[3]);
 
-    // setup_rangefinder();
+    range_finder_setup();
 }
 
 void ChassisControl::start_motors() {
@@ -54,19 +65,21 @@ void ChassisControl::set_right_motors_speed(float speed) {
     bdc_motor_set_speed(&m_motor_cfg[3], speed);
 }
 
-void ChassisControl::setup_rangefinder(){
-    // pinMode(TRIG_PIN, OUTPUT);
-    // pinMode(ECHO_PIN, INPUT);
-    //
-    // // Timer 2 for every microsecond, 12.5 * 80
-    // rngFTimer = timer(2, 80, true);
-    // timerAttachInterrupt(rngFTimer, get_range, true);
-    // // Currently runs every 100000 * 1 us = 0.1 seconds
-    // timerAlarmWrite(rngFTimer, 100000, true);
-    // timerAlarmEnable(rngFTimer);
+void ChassisControl::range_finder_setup(){
+    pinMode(TRIG_PIN, OUTPUT);
+    pinMode(ECHO_PIN_1, INPUT);
+    pinMode(ECHO_PIN_2, INPUT);
+
+    // timer 2 for every microsecond, 12.5 * 80
+    m_range_finder_timer = timerBegin(2, 80, true);
+    timerAttachInterrupt(m_range_finder_timer, range_finder_callback, true);
+
+    // currently runs every 100000 * 1 us = 0.1 seconds
+    timerAlarmWrite(m_range_finder_timer, 100000, true);
+    timerAlarmEnable(m_range_finder_timer);
 }
 
-float ChassisControl::get_range() {
+void ChassisControl::range_finder_callback() {
     // digitalWrite(TRIG_PIN, LOW);
     // delayMicroseconds(2);
     // digitalWrite(TRIG_PIN, HIGH);
@@ -81,7 +94,7 @@ float ChassisControl::get_range() {
 
 int ChassisControl::distanceSetting() {
     int setting; // 0 for close, 1 to medium distance, 2 for free range
-    float length = get_range() * CM_TO_IN;
+    float length = 0.f; // get_range() * CM_TO_IN;
 
     if (length <= 6){
         setting = 0;
@@ -120,11 +133,6 @@ drive_mode_e ChassisControl::get_drive_mode(ScoutBot_Server::RFManager_Service *
     return ret ? DRIVE_MODE_TANK : DRIVE_MODE_ARCADE;
 }
 
-float ChassisControl::scale_input_to_speed(float input) {
-    if (abs(input) < 10.f)
-        return 0.f; 
-
-    float lerp_speed = 20.f + abs(input) * 0.6f;
-    
-    return signbit(input) ? -lerp_speed : lerp_speed;
+float ChassisControl::scale_input_to_speed(float current_speed, float input_speed) {
+    return 0.1f * (input_speed - current_speed); 
 }

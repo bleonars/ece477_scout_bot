@@ -37,6 +37,9 @@ void bdc_motor_stop(bdc_motor_config_t *bdc_config) {
 void bdc_motor_set_speed(bdc_motor_config_t *bdc_config, float duty_cycle_percentage) {
     duty_cycle_percentage = std::clamp(duty_cycle_percentage, -100.f, 100.f);
 
+    if (abs(duty_cycle_percentage) < 5.f)
+        duty_cycle_percentage = 0.f;
+
     /* motor stops, set all signals low */
     if (duty_cycle_percentage == 0.f) {
         mcpwm_set_signal_low(bdc_config->m_mcpwm_unit, bdc_config->m_mcpwm_timer, MCPWM_GEN_A);
