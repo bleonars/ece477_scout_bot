@@ -55,8 +55,28 @@ void button_setup(button_config_t *bconfig, uint8_t pin_1, uint8_t pin_2, uint8_
     bconfig->m_button_gpio[1] = pin_2;
     bconfig->m_button_gpio[2] = pin_3;
     bconfig->m_button_gpio[3] = pin_4;
+    
+    for (size_t i = 0; i < NUM_BUTTONS; ++i) {
+        bconfig->m_button_state[i]      = 0;
+        bconfig->m_button_filter_val[i] = 0.f;
+    }
 }
 
 uint8_t button_read_sel(button_config_t *bconfig, size_t button_idx){
-    return digitalRead(bconfig->m_button_gpio[button_idx]) != HIGH;
+    /**
+     * IMPLEMENT button debounce here...
+     * 1. the button_config_t structure, defined in controls.h contains two variables used for this:
+     *    - m_button_state [current state of button UP (1) or DOWN (0)]
+     *    - m_button_filter_val [current value of button debounce filter decimal from 0 to 1], this is used for 
+     *      debouncing (delaying button signal so it doesnt switch from up/down fast at first during presses)
+     * 2. start out by making a digital filter.
+     *    - formula: if digitalRead positive (HIGH): filter_val += slope; else filter_val -= slope
+     * 3. check value of filter_val and decide button state based off it
+     *    - formula: if filter_val > threshold: button pressed; else button released
+     *    - update button state based off this
+     * 4. return button state
+     * 
+     * NOTE: for figuring out the slope; look on line 63 of main.cpp for controller. loop delay is 1ms, we know usually
+     * we want to delay button state switch by 20 ms, what should slope be? ...
+     */
 }

@@ -15,17 +15,11 @@
 #define JOYSTICK_CALIBRATION_BUF_SIZE 10
 #define JOYSTICK_DEADZONE_RATIO 0.05f
 
-/* PCB S3 */
-#define BUTTON_1_SEL 5
-
-/* PCB S5 */
-#define BUTTON_2_SEL 22
-
-/* PCB S6 */
-#define BUTTON_3_SEL 23
-
-/* PCB S7 */
-#define BUTTON_4_SEL 21
+#define NUM_BUTTONS  4
+#define BUTTON_1_SEL 5  /* PCB S3 */
+#define BUTTON_2_SEL 22 /* PCB S5 */
+#define BUTTON_3_SEL 23 /* PCB S6 */
+#define BUTTON_4_SEL 21 /* PCB S7 */
 
 typedef struct joystick_config {
     uint8_t  m_joystick_gpio[3];
@@ -33,7 +27,9 @@ typedef struct joystick_config {
 } joystick_config_t;
 
 typedef struct button_config {
-    uint8_t m_button_gpio[4];
+    uint8_t m_button_gpio[NUM_BUTTONS];
+    uint8_t m_button_state[NUM_BUTTONS];
+    float   m_button_filter_val[NUM_BUTTONS];
 } button_config_t;
 
 /**
