@@ -21,6 +21,8 @@
 #define BUTTON_3_SEL 23 /* PCB S6 */
 #define BUTTON_4_SEL 21 /* PCB S7 */
 
+#define BTN_DEBOUNCE_SLOPE 0.05f 
+
 typedef struct joystick_config {
     uint8_t  m_joystick_gpio[3];
     float    m_calibration_offset;
@@ -31,6 +33,12 @@ typedef struct button_config {
     uint8_t m_button_state[NUM_BUTTONS];
     float   m_button_filter_val[NUM_BUTTONS];
 } button_config_t;
+
+typedef enum {
+    BTN_PRESSED,
+    BTN_UNPRESSED,
+    BTN_FLOATING
+} button_state;
 
 /**
  * @brief setup a joystick based on input pins
