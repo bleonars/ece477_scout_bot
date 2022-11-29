@@ -79,27 +79,28 @@ uint8_t button_read_sel(button_config_t *bconfig, size_t button_idx){
      * NOTE: for figuring out the slope; look on line 63 of main.cpp for controller. loop delay is 1ms, we know usually
      * we want to delay button state switch by 20 ms, what should slope be? ...
      */
-    static const float upper_threshold = 0.9;
-    static const float lower_threshold = 0.1;
+    static const float upper_threshold = 0.7;
+    static const float lower_threshold = 0.3;
 
     float *filter_val = &(bconfig->m_button_filter_val[button_idx]);
 
-    if(digitalRead(bconfig->m_button_gpio[button_idx]) == HIGH) {
+    if (digitalRead(bconfig->m_button_gpio[button_idx]) == HIGH) {
         *filter_val += BTN_DEBOUNCE_SLOPE;
     }
     else {
         *filter_val -= BTN_DEBOUNCE_SLOPE;
     }
+
     std::clamp(*filter_val, 0.f, 1.f);
 
-    if(*filter_val > upper_threshold) {
-        bconfig->m_button_state[button_idx] = BTN_PRESSED; // pressed
+    if (*filter_val > upper_threshold) {
+        bconfig->m_button_state[button_idx] = BTN_PRESSED;
     }
-    else if(*filter_val < lower_threshold) {
-        bconfig->m_button_state[button_idx] = BTN_UNPRESSED; // unpressed
+    else if (*filter_val < lower_threshold) {
+        bconfig->m_button_state[button_idx] = BTN_UNPRESSED;
     }
     else {
-        bconfig->m_button_state[button_idx] = BTN_FLOATING; // floating
+        bconfig->m_button_state[button_idx] = BTN_FLOATING;
     }
 
     return bconfig->m_button_state[button_idx];
