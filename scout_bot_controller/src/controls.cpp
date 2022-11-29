@@ -91,7 +91,7 @@ uint8_t button_read_sel(button_config_t *bconfig, size_t button_idx){
         *filter_val -= BTN_DEBOUNCE_SLOPE;
     }
 
-    std::clamp(*filter_val, 0.f, 1.f);
+    *filter_val = std::clamp(*filter_val, 0.f, 1.f);
 
     if (*filter_val > upper_threshold) {
         bconfig->m_button_state[button_idx] = BTN_PRESSED;

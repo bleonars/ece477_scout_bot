@@ -58,11 +58,11 @@ void loop() {
     static uint8_t range_enabled = 0;
     static uint8_t drive_mode    = 0;
 
-    if (range_btn_cur == BTN_PRESSED && range_btn_last == BTN_UNPRESSED) {
+    if (range_btn_cur == BTN_PRESSED && range_btn_last == BTN_FLOATING) {
         range_enabled = !range_enabled;
     } 
     
-    if (drive_btn_cur == BTN_PRESSED && drive_btn_last == BTN_UNPRESSED) {
+    if (drive_btn_cur == BTN_PRESSED && drive_btn_last == BTN_FLOATING) {
         drive_mode = !drive_mode;
     } 
     
